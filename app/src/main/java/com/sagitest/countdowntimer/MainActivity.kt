@@ -102,6 +102,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //onSave and onRestore are for orientation only
+    //onStop and onStart is for background support and orientation
+    /*
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putLong("MilliTimeLeft", TimeLeftInMillis)
@@ -122,6 +125,7 @@ class MainActivity : AppCompatActivity() {
             startTimer()
         }
     }
+     */
 
     override fun onStop() {
         super.onStop()
