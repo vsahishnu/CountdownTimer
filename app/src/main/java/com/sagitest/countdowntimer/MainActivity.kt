@@ -3,6 +3,7 @@ package com.sagitest.countdowntimer
 import android.os.CountDownTimer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.content.SharedPreferences
 import android.os.PersistableBundle
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
@@ -119,6 +120,51 @@ class MainActivity : AppCompatActivity() {
         if (Runner) {
             TimeEnd = savedInstanceState.getLong("Ender")
             startTimer()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        val prefs: SharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE)
+        val editor:SharedPreferences.Editor =  prefs.edit()
+
+        editor.putLong("MilliTimeLeft", TimeLeftInMillis)
+        editor.putBoolean("Workin", Runner)
+        editor.putLong("Ender", TimeEnd)
+
+        editor.apply()
+
+        if (cdt != null) {
+            cdt?.cancel()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        var prefs: SharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE)
+
+        TimeLeftInMillis = prefs.getLong("MilliTimeLeft", START_MILLIS)
+        Runner = prefs.getBoolean("Workin", false)
+
+        updateCountDownText()
+        buttonUpper()
+
+        if (Runner) {
+            TimeEnd = prefs.getLong("Ender", 0)
+            TimeLeftInMillis = TimeEnd - System.currentTimeMillis()
+
+            if (TimeLeftInMillis < 0) {
+                TimeLeftInMillis = 0
+                Runner = false
+
+                updateCountDownText()
+                buttonUpper()
+            } else {
+                startTimer()
+            }
+
         }
     }
 }
