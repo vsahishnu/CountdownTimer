@@ -4,6 +4,7 @@ import android.os.CountDownTimer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.content.SharedPreferences
+import android.media.MediaPlayer
 import android.os.PersistableBundle
 import android.view.View
 import android.widget.Toast
@@ -17,6 +18,8 @@ class MainActivity : AppCompatActivity() {
     var Runner = false
     var TimeLeftInMillis: Long ?= null
     var TimeEnd: Long = 10
+
+    var songPlayer: MediaPlayer ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +70,11 @@ class MainActivity : AppCompatActivity() {
             override fun onFinish() {
                 Runner = false
                 btnSP.text = "Start"
+                tvCounter.text = "00:00"
+
+                //play a STOP! sound from raw folder
+                playSound()
+
                 watchInterfaceUpper()
             }
         }.start()
@@ -85,6 +93,14 @@ class MainActivity : AppCompatActivity() {
         TimeLeftInMillis = START_MILLIS
         updateCountDownText()
         watchInterfaceUpper()
+    }
+
+    private fun playSound() {
+        if (songPlayer == null) {
+            songPlayer = MediaPlayer.create(this, R.raw.sound1)
+            songPlayer!!.isLooping = false
+            songPlayer!!.start()
+        } else songPlayer!!.start()
     }
 
     private fun updateCountDownText() {
